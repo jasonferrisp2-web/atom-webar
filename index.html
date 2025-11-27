@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ATOM WebAR</title>
+
+    <!-- A-Frame (3D/WebXR engine) -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+    <!-- MindAR (image tracking for WebAR) -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      #ui-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 8px 12px;
+        z-index: 10;
+        color: #ffffff;
+        font-size: 14px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent);
+        text-align: center;
+      }
+      #ui-overlay span {
+        font-weight: 600;
+        color: #5cf2ff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Simple instruction bar -->
+    <div id="ui-overlay">
+      <span>ATOM WebAR</span> – Point your camera at the leaflet product images to see them pop out in 3D.
+    </div>
+
+    <!-- WebAR scene -->
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind;"
+      embedded
+      color-space="sRGB"
+      renderer="colorManagement: true; physicallyCorrectLights: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true">
+
+      <a-assets>
+        <!-- Solid product images used as hologram-style planes -->
+        <img id="cubeImage" src="./cube.png">
+        <img id="jerryImage" src="./jerry.png">
+      </a-assets>
+
+      <!-- Camera -->
+      <a-camera look-controls="enabled: false"></a-camera>
+
+      <!-- TARGET 0: Cube leaflet image → floating Cube hologram -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Solid “pop-out” plane with slow 3D rotation -->
+        <a-plane
+          src="#cubeImage"
+          width="1"
+          height="1"
+          position="0 0 0.12"
+          material="transparent:true; opacity:1"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear">
+        </a-plane>
+
+        <!-- Glow ring under the product to feel like a hologram pad -->
+        <a-ring
+          position="0 -0.6 0"
+          radius-inner="0.55"
+          radius-outer="0.8"
+          rotation="-90 0 0"
+          material="color:#24f5ff; opacity:0.75; emissive:#24f5ff; emissiveIntensity:1.2">
+        </a-ring>
+      </a-entity>
+
+      <!-- TARGET 1: Jerry Can leaflet image → floating Jerry Can hologram -->
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-plane
+          src="#jerryImage"
+          width="1"
+          height="1.2"
+          position="0 0 0.12"
+          material="transparent:true; opacity:1"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear">
+        </a-plane>
+
+        <a-ring
+          position="0 -0.7 0"
+          radius-inner="0.55"
+          radius-outer="0.8"
+          rotation="-90 0 0"
+          material="color:#24f5ff; opacity:0.75; emissive:#24f5ff; emissiveIntensity:1.2">
+        </a-ring>
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>
